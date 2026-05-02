@@ -37,7 +37,7 @@ async function callGemini(conversationMessages: Message[]): Promise<string> {
 
   const contents = [
     { role: "user", parts: [{ text: SYSTEM_PROMPT }] },
-    { role: "model", parts: [{ text: "Got it! I'm EcoBot, ready to help with e-waste. 🌱" }] },
+    { role: "model", parts: [{ text: "Got it! I'm EcoBot, your environmental guide. 🌱" }] },
     ...conversationMessages
       .filter((m) => m.id !== "greeting")
       .map((m) => ({
@@ -65,7 +65,7 @@ async function callGemini(conversationMessages: Message[]): Promise<string> {
 const createGreeting = (): Message => ({
   id: "greeting",
   role: "bot",
-  text: "Hey! I'm EcoBot 🌱 I help you figure out what to do with your e-waste. What have you got? ♻️",
+  text: "Hey! I'm EcoBot 🌱 Ask me about recycling, composting, energy saving, or sustainability. What's on your mind? ♻️",
   timestamp: Date.now(),
 });
 
@@ -217,7 +217,7 @@ export default function ChatScreen() {
             style={styles.input}
             value={inputText}
             onChangeText={setInputText}
-            placeholder="Ask about e-waste..."
+            placeholder="Ask about sustainability..."
             placeholderTextColor="#9BA8A0"
             onSubmitEditing={() => sendMessage(inputText)}
             returnKeyType="send"
