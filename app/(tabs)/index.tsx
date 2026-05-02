@@ -1,28 +1,124 @@
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useRouter } from "expo-router";
 import {
+  KeyboardAvoidingView,
+  Platform,
+  SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
 
-const user = {
-  name: "bob",
+const userStats = {
   monthly: 24.8,
   co2: 41,
   items: 67,
   badges: 3,
 };
 
-export default function HomeScreen() {
-  const scrollRef = useRef<ScrollView>(null);
+function LoginScreen({ onLogin }: { onLogin: (name: string) => void }) {
+  const [step, setStep] = useState<1 | 2>(1);
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [userName, setUserName] = useState("");
+  const [otp, setOtp] = useState("");
+  const [error, setError] = useState("");
+  const [timer, setTimer] = useState(30);
 
+  useEffect(() => {
+    if (step !== 2 || timer <= 0) return;
+    const interval = setInterval(() => setTimer((prev) => prev - 1), 1000);
+    return () => clearInterval(interval);
+  }, [step, timer]);
+
+  const handleSendOtp = () => {
+    if (phoneNumber.length !== 10) {
+      setError("Please enter a valid 10-digit number.");
+      return;
+    }
+    setError("");
+    setStep(2);
+  };
+
+  const handleVerifyOtp = () => {
+    if (!userName.trim()) {
+      setError("Please enter your name.");
+      return;
+    }
+    if (otp.length !== 6) {
+      setError("Please enter the 6-digit OTP.");
+      return;
+    }
+    onLogin(userName.trim());
+  };
+
+  return (
+    <SafeAreaView style={loginStyles.container}>
+      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}>
+        <View style={loginStyles.card}>
+          <Text style={loginStyles.title}>
+            {step === 1 ? "Verify Phone" : "Complete Profile"}
+          </Text>
+          {error ? <Text style={loginStyles.error}>{error}</Text> : null}
+
+          {step === 1 ? (
+            <TextInput
+              style={loginStyles.input}
+              placeholder="Enter Mobile Number"
+              value={phoneNumber}
+              onChangeText={setPhoneNumber}
+              keyboardType="numeric"
+              maxLength={10}
+            />
+          ) : (
+            <View>
+              <TextInput
+                style={loginStyles.input}
+                placeholder="Enter Your Full Name"
+                value={userName}
+                onChangeText={setUserName}
+                autoCapitalize="words"
+              />
+              <TextInput
+                style={loginStyles.input}
+                placeholder="Enter 6-digit OTP"
+                value={otp}
+                onChangeText={setOtp}
+                keyboardType="numeric"
+                maxLength={6}
+              />
+            </View>
+          )}
+
+          <TouchableOpacity
+            style={loginStyles.button}
+            onPress={step === 1 ? handleSendOtp : handleVerifyOtp}
+          >
+            <Text style={loginStyles.buttonText}>
+              {step === 1 ? "Send OTP" : "Verify & Proceed"}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
+  );
+}
+
+export default function HomeScreen() {
+  const [loggedInName, setLoggedInName] = useState<string | null>(null);
+  const scrollRef = useRef<ScrollView>(null);
   const recycleRef = useRef<View>(null);
   const impactRef = useRef<View>(null);
   const badgeRef = useRef<View>(null);
   const router = useRouter();
+
+  if (!loggedInName) {
+    return <LoginScreen onLogin={(name) => setLoggedInName(name)} />;
+  }
+
+  const user = { name: loggedInName, ...userStats };
 
   return (
     <ScrollView ref={scrollRef} style={styles.container}>
@@ -403,5 +499,58 @@ const styles = StyleSheet.create({
     marginTop: 15,
     color: "#6E7F68",
     fontSize: 16,
+  },
+});
+
+const loginStyles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#F5F1E8",
+    justifyContent: "center",
+    padding: 20,
+  },
+  card: {
+    backgroundColor: "#fff",
+    padding: 30,
+    borderRadius: 20,
+    elevation: 5,
+    shadowColor: "#000",
+    shadowOpacity: 0.08,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 4 },
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: "bold",
+    color: "#4E6B57",
+    marginBottom: 20,
+    textAlign: "center",
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: "#E3DDD1",
+    padding: 15,
+    borderRadius: 10,
+    fontSize: 16,
+    marginBottom: 15,
+    color: "#4E6B57",
+  },
+  button: {
+    backgroundColor: "#4E6B57",
+    padding: 18,
+    borderRadius: 10,
+    alignItems: "center",
+    marginTop: 10,
+  },
+  buttonText: {
+    color: "#F5F1E8",
+    fontWeight: "bold",
+    fontSize: 16,
+  },
+  error: {
+    color: "#c0392b",
+    marginBottom: 10,
+    textAlign: "center",
+    fontSize: 14,
   },
 });
