@@ -1,8 +1,8 @@
 import { useRef, useState, useEffect } from "react";
 import { useRouter } from "expo-router";
 import {
-  Alert,
   KeyboardAvoidingView,
+  Modal,
   Platform,
   SafeAreaView,
   ScrollView,
@@ -109,6 +109,7 @@ function LoginScreen({ onLogin }: { onLogin: (name: string) => void }) {
 
 export default function HomeScreen() {
   const [loggedInName, setLoggedInName] = useState<string | null>(null);
+  const [showComingSoon, setShowComingSoon] = useState(false);
   const scrollRef = useRef<ScrollView>(null);
   const recycleRef = useRef<View>(null);
   const impactRef = useRef<View>(null);
@@ -191,13 +192,7 @@ export default function HomeScreen() {
 
         <TouchableOpacity
           style={styles.mainButton}
-          onPress={() =>
-            Alert.alert(
-              "Whoa, slow down Captain Planet! 🌍",
-              "We're still building the digital recycling bin. Hoard those broken charging cables for just a little longer.",
-              [{ text: "Got it!", style: "default" }]
-            )
-          }
+          onPress={() => setShowComingSoon(true)}
         >
           <Text style={styles.buttonText}>add today&apos;s e-waste</Text>
         </TouchableOpacity>
@@ -313,6 +308,27 @@ export default function HomeScreen() {
           <Text style={styles.progressText}>70% to level 4</Text>
         </View>
       </View>
+      <Modal
+        visible={showComingSoon}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setShowComingSoon(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalCard}>
+            <Text style={styles.modalTitle}>Whoa, slow down Captain Planet! 🌍</Text>
+            <Text style={styles.modalBody}>
+              We&apos;re still building the digital recycling bin. Hoard those broken charging cables for just a little longer.
+            </Text>
+            <TouchableOpacity
+              style={styles.modalButton}
+              onPress={() => setShowComingSoon(false)}
+            >
+              <Text style={styles.modalButtonText}>Got it!</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </ScrollView>
   );
 }
@@ -509,6 +525,47 @@ const styles = StyleSheet.create({
     marginTop: 15,
     color: "#6E7F68",
     fontSize: 16,
+  },
+
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.4)",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 40,
+  },
+  modalCard: {
+    backgroundColor: "#F5F1E8",
+    borderRadius: 28,
+    padding: 36,
+    alignItems: "center",
+    maxWidth: 480,
+    width: "100%",
+  },
+  modalTitle: {
+    fontSize: 24,
+    fontWeight: "600",
+    color: "#4E6B57",
+    textAlign: "center",
+    marginBottom: 16,
+  },
+  modalBody: {
+    fontSize: 16,
+    color: "#7A8B76",
+    textAlign: "center",
+    lineHeight: 26,
+    marginBottom: 28,
+  },
+  modalButton: {
+    backgroundColor: "#4E6B57",
+    paddingVertical: 14,
+    paddingHorizontal: 40,
+    borderRadius: 40,
+  },
+  modalButtonText: {
+    color: "#F5F1E8",
+    fontSize: 16,
+    fontWeight: "600",
   },
 });
 
