@@ -11,7 +11,7 @@ import {
   View,
   Animated,
 } from "react-native";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 
 type Message = {
   id: string;
@@ -79,6 +79,7 @@ const QUICK_REPLIES = [
 
 export default function ChatScreen() {
   const router = useRouter();
+  const { initialPrompt } = useLocalSearchParams<{ initialPrompt?: string }>();
   const flatListRef = useRef<FlatList<Message>>(null);
   const msgIdRef = useRef(0);
   const nextId = () => String(++msgIdRef.current);
@@ -86,6 +87,10 @@ export default function ChatScreen() {
   const [inputText, setInputText] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [showQuickReplies, setShowQuickReplies] = useState(true);
+
+  useEffect(() => {
+    if (initialPrompt) sendMessage(initialPrompt);
+  }, []);
 
   const scrollToBottom = () => {
     flatListRef.current?.scrollToEnd({ animated: true });

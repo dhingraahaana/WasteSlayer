@@ -6,12 +6,6 @@
 
 ---
 
-## Overview
-
-A full-screen modal chat interface powered by the Gemini API that educates users about e-waste recycling. The bot has a friendly personality (EcoBot 🌱), gives short action-oriented answers, and encourages eco-friendly habits. Accessible by tapping "chat with your own recycling agent →" on the Home screen.
-
----
-
 ## 1. Navigation & Screen Structure
 
 - Tapping the chatbot CTA in `app/(tabs)/index.tsx` calls `router.push('/chat')`
@@ -62,7 +56,7 @@ If the API call fails (network error, invalid key, rate limit), the bot appends 
 
 ### Layout (top to bottom)
 
-1. **Header bar** — "EcoBot 🌱" title centered, ✕ close button top-right, subtle bottom border (`#E3DDD1`)
+1. **Header bar** — "EcoBot" title centered, ✕ close button top-right, subtle bottom border (`#E3DDD1`)
 2. **Message list** — `FlatList`, newest messages at bottom. Bot bubbles left-aligned, user bubbles right-aligned. `borderRadius: 20`, small left/right indent to visually indicate sender. Typing indicator (animated three dots) shown while `isLoading` is true.
 3. **Quick reply chips** — horizontal `ScrollView` of pill buttons shown below the most recent bot message. Chips disappear once the user sends any message. Default chips:
    - "What do I do with old batteries?"

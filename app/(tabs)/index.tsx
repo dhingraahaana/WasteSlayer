@@ -104,23 +104,23 @@ export default function HomeScreen() {
         </Text>
 
         <View style={styles.categoryContainer}>
-          <TouchableOpacity style={styles.categoryButton}>
+          <TouchableOpacity style={styles.categoryButton} onPress={() => router.push({ pathname: '/chat', params: { initialPrompt: "What do I do with old batteries?" } })}>
             <Text style={styles.categoryText}>batteries</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.categoryButton}>
+          <TouchableOpacity style={styles.categoryButton} onPress={() => router.push({ pathname: '/chat', params: { initialPrompt: "Can I recycle my phone?" } })}>
             <Text style={styles.categoryText}>phones</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.categoryButton}>
+          <TouchableOpacity style={styles.categoryButton} onPress={() => router.push({ pathname: '/chat', params: { initialPrompt: "How to dispose a laptop?" } })}>
             <Text style={styles.categoryText}>laptops</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.categoryButton}>
+          <TouchableOpacity style={styles.categoryButton} onPress={() => router.push({ pathname: '/chat', params: { initialPrompt: "Where do chargers go?" } })}>
             <Text style={styles.categoryText}>chargers</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.categoryButton}>
+          <TouchableOpacity style={styles.categoryButton} onPress={() => router.push({ pathname: '/chat', params: { initialPrompt: "How do I recycle other e-waste?" } })}>
             <Text style={styles.categoryText}>other</Text>
           </TouchableOpacity>
         </View>
