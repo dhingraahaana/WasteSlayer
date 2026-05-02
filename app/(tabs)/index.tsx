@@ -1,4 +1,5 @@
 import { useRef } from "react";
+import { useRouter } from "expo-router";
 import {
   ScrollView,
   StyleSheet,
@@ -21,6 +22,7 @@ export default function HomeScreen() {
   const recycleRef = useRef<View>(null);
   const impactRef = useRef<View>(null);
   const badgeRef = useRef<View>(null);
+  const router = useRouter();
 
   return (
     <ScrollView ref={scrollRef} style={styles.container}>
@@ -123,7 +125,7 @@ export default function HomeScreen() {
           </TouchableOpacity>
         </View>
 
-        <TouchableOpacity style={styles.chatbotBox}>
+        <TouchableOpacity style={styles.chatbotBox} onPress={() => router.push('/chat')}>
           <Text style={styles.chatbotText}>
             chat with your own recycling agent →
           </Text>
