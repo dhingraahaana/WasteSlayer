@@ -186,48 +186,49 @@ export default function ChatScreen() {
         ListFooterComponent={isLoading ? <TypingIndicator /> : null}
       />
 
-      {/* QUICK REPLIES */}
-      {showQuickReplies && (
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          style={styles.quickRepliesScroll}
-          contentContainerStyle={styles.quickRepliesContent}
-        >
-          {QUICK_REPLIES.map((reply) => (
-            <TouchableOpacity
-              key={reply}
-              style={styles.chip}
-              onPress={() => sendMessage(reply)}
-            >
-              <Text style={styles.chipText}>{reply}</Text>
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
-      )}
-
       {/* INPUT BAR */}
       <View style={styles.inputBar}>
-        <TextInput
-          style={styles.input}
-          value={inputText}
-          onChangeText={setInputText}
-          placeholder="Ask about e-waste..."
-          placeholderTextColor="#9BA8A0"
-          onSubmitEditing={() => sendMessage(inputText)}
-          returnKeyType="send"
-          multiline={false}
-        />
-        <TouchableOpacity
-          style={[
-            styles.sendButton,
-            (!inputText.trim() || isLoading) && styles.sendButtonDisabled,
-          ]}
-          onPress={() => sendMessage(inputText)}
-          disabled={!inputText.trim() || isLoading}
-        >
-          <Text style={styles.sendIcon}>➤</Text>
-        </TouchableOpacity>
+        {/* QUICK REPLIES */}
+        {showQuickReplies && (
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={styles.quickRepliesScroll}
+            contentContainerStyle={styles.quickRepliesContent}
+          >
+            {QUICK_REPLIES.map((reply) => (
+              <TouchableOpacity
+                key={reply}
+                style={styles.chip}
+                onPress={() => sendMessage(reply)}
+              >
+                <Text style={styles.chipText}>{reply}</Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        )}
+        <View style={styles.inputRow}>
+          <TextInput
+            style={styles.input}
+            value={inputText}
+            onChangeText={setInputText}
+            placeholder="Ask about e-waste..."
+            placeholderTextColor="#9BA8A0"
+            onSubmitEditing={() => sendMessage(inputText)}
+            returnKeyType="send"
+            multiline={false}
+          />
+          <TouchableOpacity
+            style={[
+              styles.sendButton,
+              (!inputText.trim() || isLoading) && styles.sendButtonDisabled,
+            ]}
+            onPress={() => sendMessage(inputText)}
+            disabled={!inputText.trim() || isLoading}
+          >
+            <Text style={styles.sendIcon}>➤</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </KeyboardAvoidingView>
   );
@@ -347,28 +348,32 @@ const styles = StyleSheet.create({
   },
   quickRepliesScroll: {
     flexShrink: 0,
-    paddingVertical: 8,
   },
   quickRepliesContent: {
-    paddingHorizontal: 16,
     gap: 8,
+    alignItems: "center",
   },
   chip: {
     backgroundColor: "#E3DDD1",
-    borderRadius: 20,
-    paddingVertical: 10,
-    paddingHorizontal: 16,
+    borderRadius: 24,
+    paddingVertical: 18,
+    paddingHorizontal: 28,
+    alignSelf: "flex-start",
   },
   chipText: {
     color: "#4E6B57",
-    fontSize: 14,
+    fontSize: 17,
   },
   inputBar: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: "column",
     backgroundColor: "#EFE9DE",
     paddingHorizontal: 16,
     paddingVertical: 12,
+    gap: 8,
+  },
+  inputRow: {
+    flexDirection: "row",
+    alignItems: "center",
     gap: 10,
   },
   input: {
