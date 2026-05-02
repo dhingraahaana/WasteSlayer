@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   FlatList,
   KeyboardAvoidingView,
@@ -19,6 +19,9 @@ type Message = {
   text: string;
   timestamp: number;
 };
+
+let _msgId = 0;
+const nextId = () => String(++_msgId);
 
 const SYSTEM_PROMPT =
   "You are EcoBot 🌱, a friendly e-waste recycling assistant for the WasteSlayer app. " +
@@ -87,11 +90,35 @@ export default function ChatScreen() {
     flatListRef.current?.scrollToEnd({ animated: true });
   };
 
+  const renderMessage = useCallback(({ item }: { item: Message }) => (
+    <View
+      style={[
+        styles.bubbleWrapper,
+        item.role === "user" ? styles.bubbleWrapperUser : styles.bubbleWrapperBot,
+      ]}
+    >
+      <View
+        style={[
+          styles.bubble,
+          item.role === "user" ? styles.bubbleUser : styles.bubbleBot,
+        ]}
+      >
+        <Text
+          style={
+            item.role === "user" ? styles.bubbleTextUser : styles.bubbleTextBot
+          }
+        >
+          {item.text}
+        </Text>
+      </View>
+    </View>
+  ), []);
+
   const sendMessage = async (text: string) => {
     if (!text.trim() || isLoading) return;
 
     const userMessage: Message = {
-      id: String(Date.now()),
+      id: nextId(),
       role: "user",
       text: text.trim(),
       timestamp: Date.now(),
@@ -107,7 +134,7 @@ export default function ChatScreen() {
       setMessages((prev) => [
         ...prev,
         {
-          id: String(Date.now() + 1),
+          id: nextId(),
           role: "bot",
           text: botReply,
           timestamp: Date.now(),
@@ -117,7 +144,7 @@ export default function ChatScreen() {
       setMessages((prev) => [
         ...prev,
         {
-          id: String(Date.now() + 1),
+          id: nextId(),
           role: "bot",
           text: "Oops, I couldn't reach the internet 🌐 Try again in a moment!",
           timestamp: Date.now(),
@@ -148,29 +175,7 @@ export default function ChatScreen() {
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.messageList}
         onContentSizeChange={scrollToBottom}
-        renderItem={({ item }) => (
-          <View
-            style={[
-              styles.bubbleWrapper,
-              item.role === "user" ? styles.bubbleWrapperUser : styles.bubbleWrapperBot,
-            ]}
-          >
-            <View
-              style={[
-                styles.bubble,
-                item.role === "user" ? styles.bubbleUser : styles.bubbleBot,
-              ]}
-            >
-              <Text
-                style={
-                  item.role === "user" ? styles.bubbleTextUser : styles.bubbleTextBot
-                }
-              >
-                {item.text}
-              </Text>
-            </View>
-          </View>
-        )}
+        renderItem={renderMessage}
         ListFooterComponent={isLoading ? <TypingIndicator /> : null}
       />
 
