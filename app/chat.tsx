@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   FlatList,
   KeyboardAvoidingView,
@@ -20,8 +20,6 @@ type Message = {
   timestamp: number;
 };
 
-let _msgId = 0;
-const nextId = () => String(++_msgId);
 
 const SYSTEM_PROMPT =
   "You are EcoBot 🌱, a friendly e-waste recycling assistant for the WasteSlayer app. " +
@@ -63,12 +61,12 @@ async function callGemini(conversationMessages: Message[]): Promise<string> {
   return data.candidates?.[0]?.content?.parts?.[0]?.text ?? "I didn't catch that — try again! ♻️";
 }
 
-const GREETING: Message = {
+const createGreeting = (): Message => ({
   id: "greeting",
   role: "bot",
   text: "Hey! I'm EcoBot 🌱 I help you figure out what to do with your e-waste. What have you got? ♻️",
   timestamp: Date.now(),
-};
+});
 
 const QUICK_REPLIES = [
   "What do I do with old batteries?",
@@ -81,7 +79,9 @@ const QUICK_REPLIES = [
 export default function ChatScreen() {
   const router = useRouter();
   const flatListRef = useRef<FlatList<Message>>(null);
-  const [messages, setMessages] = useState<Message[]>([GREETING]);
+  const msgIdRef = useRef(0);
+  const nextId = () => String(++msgIdRef.current);
+  const [messages, setMessages] = useState<Message[]>(() => [createGreeting()]);
   const [inputText, setInputText] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [showQuickReplies, setShowQuickReplies] = useState(true);
@@ -90,7 +90,7 @@ export default function ChatScreen() {
     flatListRef.current?.scrollToEnd({ animated: true });
   };
 
-  const renderMessage = useCallback(({ item }: { item: Message }) => (
+  const renderMessage = ({ item }: { item: Message }) => (
     <View
       style={[
         styles.bubbleWrapper,
@@ -112,7 +112,7 @@ export default function ChatScreen() {
         </Text>
       </View>
     </View>
-  ), []);
+  );
 
   const sendMessage = async (text: string) => {
     if (!text.trim() || isLoading) return;
@@ -124,13 +124,15 @@ export default function ChatScreen() {
       timestamp: Date.now(),
     };
 
-    setMessages((prev) => [...prev, userMessage]);
+    const updatedMessages = [...messages, userMessage];
+    setMessages(updatedMessages);
     setInputText("");
     setIsLoading(true);
     setShowQuickReplies(false);
+    setTimeout(scrollToBottom, 50);
 
     try {
-      const botReply = await callGemini([...messages, userMessage]);
+      const botReply = await callGemini(updatedMessages);
       setMessages((prev) => [
         ...prev,
         {
@@ -140,6 +142,7 @@ export default function ChatScreen() {
           timestamp: Date.now(),
         },
       ]);
+      setTimeout(scrollToBottom, 50);
     } catch {
       setMessages((prev) => [
         ...prev,
@@ -174,7 +177,6 @@ export default function ChatScreen() {
         data={messages}
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.messageList}
-        onContentSizeChange={scrollToBottom}
         renderItem={renderMessage}
         ListFooterComponent={isLoading ? <TypingIndicator /> : null}
       />
