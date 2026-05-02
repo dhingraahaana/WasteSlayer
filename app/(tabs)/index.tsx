@@ -1,6 +1,7 @@
 import { useRef, useState, useEffect } from "react";
 import { useRouter } from "expo-router";
 import {
+  Alert,
   KeyboardAvoidingView,
   Platform,
   SafeAreaView,
@@ -188,7 +189,16 @@ export default function HomeScreen() {
           help build a greener future.
         </Text>
 
-        <TouchableOpacity style={styles.mainButton}>
+        <TouchableOpacity
+          style={styles.mainButton}
+          onPress={() =>
+            Alert.alert(
+              "Whoa, slow down Captain Planet! 🌍",
+              "We're still building the digital recycling bin. Hoard those broken charging cables for just a little longer.",
+              [{ text: "Got it!", style: "default" }]
+            )
+          }
+        >
           <Text style={styles.buttonText}>add today&apos;s e-waste</Text>
         </TouchableOpacity>
       </View>
