@@ -47,7 +47,7 @@ async function callGemini(conversationMessages: Message[]): Promise<string> {
   ];
 
   const response = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -55,6 +55,7 @@ async function callGemini(conversationMessages: Message[]): Promise<string> {
     }
   );
 
+  if (response.status === 429) throw new Error("rate_limit");
   if (!response.ok) throw new Error(`Gemini API error: ${response.status}`);
 
   const data = await response.json();
@@ -143,13 +144,16 @@ export default function ChatScreen() {
         },
       ]);
       setTimeout(scrollToBottom, 50);
-    } catch {
+    } catch (err) {
+      const isRateLimit = err instanceof Error && err.message === "rate_limit";
       setMessages((prev) => [
         ...prev,
         {
           id: nextId(),
           role: "bot",
-          text: "Oops, I couldn't reach the internet 🌐 Try again in a moment!",
+          text: isRateLimit
+            ? "I'm getting a lot of questions right now 🌿 Give me a moment and try again!"
+            : "Oops, I couldn't reach the internet 🌐 Try again in a moment!",
           timestamp: Date.now(),
         },
       ]);
