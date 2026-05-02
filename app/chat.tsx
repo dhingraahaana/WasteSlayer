@@ -153,6 +153,7 @@ export default function ChatScreen() {
           timestamp: Date.now(),
         },
       ]);
+      setTimeout(scrollToBottom, 50);
     } finally {
       setIsLoading(false);
     }
