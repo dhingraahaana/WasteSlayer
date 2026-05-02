@@ -84,7 +84,7 @@ export default function HomeScreen() {
       {/* HERO SECTION */}
       <View style={styles.hero}>
         <Text style={styles.heroTitle}>
-          Hi, {user.name}! Let's slay some waste today.
+          Hi, {user.name}! Let&apos;s slay some waste today.
         </Text>
 
         <Text style={styles.heroSubtitle}>
@@ -93,7 +93,7 @@ export default function HomeScreen() {
         </Text>
 
         <TouchableOpacity style={styles.mainButton}>
-          <Text style={styles.buttonText}>add today's e-waste</Text>
+          <Text style={styles.buttonText}>add today&apos;s e-waste</Text>
         </TouchableOpacity>
       </View>
 
