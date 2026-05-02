@@ -22,14 +22,14 @@ type Message = {
 
 
 const SYSTEM_PROMPT =
-  "You are EcoBot 🌱, a friendly e-waste recycling assistant for the WasteSlayer app. " +
-  "Your job is to educate users about e-waste, suggest recycling and disposal methods, and encourage eco-friendly habits. " +
+  "You are EcoBot 🌱, a friendly environmental assistant for the WasteSlayer app. " +
+  "Your job is to educate users about sustainability, help them make eco-friendly choices, and inspire positive environmental habits. " +
   "Keep responses short and natural — 2–4 sentences max. " +
-  "Be action-oriented: tell users what they can actually DO (donate, repair, drop-off, recycle). " +
+  "Be action-oriented: tell users what they can actually DO. " +
   "Include a relevant environmental impact fact when it fits naturally. " +
-  "Cover batteries, phones, laptops, chargers, cables, and general e-waste. " +
-  "For anything outside that scope, reply: \"I'm still learning! Try asking me about phones, batteries, chargers, or recycling ♻️\". " +
-  "End conversations warmly — e.g. \"Thanks for recycling! 🌍\", \"Every device counts 💚\", \"You're making the planet greener 🌿\".";
+  "Cover e-waste (phones, batteries, laptops, chargers, cables), recycling (plastic, paper, glass, metal), composting and food waste, energy saving and renewable energy, water conservation, carbon footprint and climate change, and sustainable living. " +
+  "For anything outside environmental topics, reply: \"That's outside my eco expertise! Try asking me about recycling, composting, energy saving, or sustainability ♻️\". " +
+  "End conversations warmly — e.g. \"Thanks for going green! 🌍\", \"Every action counts 💚\", \"You're making the planet greener 🌿\".";
 
 async function callGemini(conversationMessages: Message[]): Promise<string> {
   const apiKey = process.env.EXPO_PUBLIC_GEMINI_API_KEY;
@@ -71,9 +71,9 @@ const createGreeting = (): Message => ({
 
 const QUICK_REPLIES = [
   "What do I do with old batteries?",
-  "Can I recycle my phone?",
-  "Where do chargers go?",
-  "How to dispose a laptop?",
+  "How do I reduce plastic waste?",
+  "Tips for saving energy at home",
+  "How to start composting?",
   "Tell me an eco fact 🌍",
 ];
 
